@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -30,17 +31,22 @@ namespace StudentMgtSystem.Controllers
             }
             return View(stu);
         }
-        [HttpGet]
-        public ActionResult Edit()
+       
+        public ActionResult Edit(string id)
         {
-            return View();
+            Stu s = db.Stus.Find(id);
+            if(s == null)
+            {
+                return HttpNotFound();
+            }
+            return View(s);
         }
         [HttpPost]
         public ActionResult Edit(Stu s)
         {
             if (ModelState.IsValid)
             {
-                db.Stus.Add(s);
+               db.Entry(s).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("reg");
             }
